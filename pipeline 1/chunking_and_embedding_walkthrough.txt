@@ -1,0 +1,404 @@
+CHUNKING + EMBEDDING WALKTHROUGH
+Using a real example from Chapter One of the book
+==================================================
+
+GOAL
+----
+Before this stage, the book is just one giant block of text. A computer
+cannot compare "meaning" of two pieces of text directly. So we:
+  1. Cut the book into small pieces ("chunks") - chunking.py
+  2. Turn each chunk into a list of numbers that represents its meaning
+     ("embedding") - embedding.py
+These numbers are what will later let us search "which part of the book
+is relevant to this question?" by comparing number-lists instead of words.
+
+
+STEP 1: load_book()
+--------------------
+Code:
+    text = load_book(BOOK_PATH)
+
+What it does: opens the .txt file and reads the WHOLE thing into one
+long string. Nothing is split yet.
+
+Real output:
+    Type of 'text': <class 'str'>
+    Total characters in whole book: 439742
+    First 80 characters:
+    "Harry Potter and the Sorcerer's Stone\n\n\nCHAPTER ONE\n\nTHE BOY WHO LIVED\n\nMr. and "
+
+Note: \n is the "newline" character. \n\n (double newline) = a blank
+line = a paragraph break in the original file. A single \n is just
+where a sentence happened to wrap onto the next line in the .txt file,
+not a real paragraph break.
+
+
+STEP 2: split_into_chapters()
+------------------------------
+Code:
+    pattern = re.compile(r"^CHAPTER [A-Z]+$", re.MULTILINE)
+    headings = pattern.findall(text)
+    pieces = pattern.split(text)[1:]
+
+"pattern" is a regular expression (a search pattern for text).
+r"^CHAPTER [A-Z]+$" means: "a line that starts with the word CHAPTER,
+then a space, then one-or-more capital letters, then ends" - this
+matches lines like "CHAPTER ONE" / "CHAPTER TWO", not sentences that
+just happen to contain the word "chapter".
+
+- findall() collects every matching heading -> found 17 headings
+  ('CHAPTER ONE' ... 'CHAPTER SEVENTEEN').
+- split() cuts the giant string apart AT every heading, throwing the
+  heading text itself away, keeping everything in between as separate
+  pieces. [1:] drops the very first piece (the book title, which comes
+  before "CHAPTER ONE" and isn't a chapter).
+
+Real output:
+    Number of (heading, body) pairs found: 17
+    chapters[0] heading: 'CHAPTER ONE'
+    chapters[0] body (first 200 chars):
+    "THE BOY WHO LIVED\n\nMr. and Mrs. Dursley, of number four, Privet Drive,
+    were proud to say\n..."
+
+So chapters[0] is a pair: ('CHAPTER ONE', 'THE BOY WHO LIVED\n\nMr. and
+Mrs...'). The heading was cleanly extracted; the body still has its raw
+\n and \n\n characters, untouched.
+
+
+STEP 3: split_into_paragraphs()
+---------------------------------
+Code:
+    raw_paragraphs = chapter_text.split("\n\n")
+    ...
+    joined = " ".join(raw.split("\n"))
+
+First line: cuts the chapter body wherever there's a blank line (\n\n)
+- that's how we detect "this is a new paragraph." Chapter One split
+into 109 pieces this way (including the title line as piece 0).
+
+Second line is the cleanup step: take one paragraph, split it on single
+\n (the mid-sentence line wraps), then glue the pieces back together
+with a plain space instead of a newline.
+
+Real BEFORE (raw from file - notice the \n in the middle of sentences):
+"Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say\nthat
+they were perfectly normal, thank you very much. They were the last\npeople
+you'd expect to be involved in anything strange or mysterious,\nbecause they
+just didn't hold with such nonsense."
+
+Real AFTER (paragraphs[1] - one continuous line now):
+"Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that
+they were perfectly normal, thank you very much. They were the last people
+you'd expect to be involved in anything strange or mysterious, because they
+just didn't hold with such nonsense."
+
+Same words, but now reads as one continuous block instead of four choppy
+lines. This matters because the embedding model reads text as natural
+language - leftover mid-sentence line breaks would look like noise to it.
+
+
+CLARIFICATION: what \n and \n\n actually mean (tiny example)
+-----------------------------------------------------------
+If this content in Notepad looked like:
+
+    The cat sat.
+    It was happy.
+
+    The dog ran fast.
+
+That's 3 visible lines of text plus one blank line. But Python does NOT
+see "lines" the way your eyes do - it sees ONE long string of
+characters, and every time you hit Enter in the file, Python records it
+as an invisible character called \n. So that Notepad content, to
+Python, is really just this one string:
+
+    'The cat sat.\nIt was happy.\n\nThe dog ran fast.'
+
+Read it character by character: "...sat." then \n (Enter was pressed
+once) then "It was happy." then \n\n (Enter was pressed TWICE IN A ROW
+- that's what makes a blank line) then "The dog ran fast."
+
+RULE: one \n = one Enter press. Two \n in a row = a blank line = "new
+paragraph."
+
+Step A: mini_text.split("\n\n") -> cuts ONLY where there were two \n in
+a row (the blank line):
+    ['The cat sat.\nIt was happy.', 'The dog ran fast.']
+2 pieces. Notice pieces[0] STILL has a \n inside it - that's because
+there was only one Enter press between "sat." and "It", not a blank
+line, so split("\n\n") left it alone. This piece is our ONE paragraph,
+but it's still messy.
+
+Step B: pieces[0].split("\n") -> now break that ONE piece apart by
+single Enters:
+    ['The cat sat.', 'It was happy.']
+A list of 2 separate sentence-lines.
+
+Step C: " ".join(lines) -> glue them back with a SPACE instead of a
+newline:
+    'The cat sat. It was happy.'
+One clean sentence, no leftover \n characters.
+
+SUMMARY - the entire trick, done in 2 cuts:
+  1. Cut on \n\n first -> gives you the paragraphs (each paragraph
+     might still have single \n's inside it).
+  2. For each paragraph, cut on \n and glue back with spaces -> removes
+     those leftover single \n's, leaving clean readable text.
+
+So: many lines -> one paragraph (when there's no blank line between
+them). One line does NOT equal one paragraph. A paragraph is defined by
+the BLANK line around it, not by where the text happens to wrap.
+
+
+STEP 4: chunk_chapter()
+-------------------------
+This is the part with the most moving pieces. For this demo we
+temporarily used max_tokens=60 (instead of the real production value of
+400) so that a "chunk closes and a new one starts" would actually
+happen within just 4 paragraphs, instead of needing dozens of
+paragraphs to hit 400.
+
+The 4 real paragraphs going in:
+    paragraph[0]: 45 words, 61 tokens   "Mr. and Mrs. Dursley, of number four..."
+    paragraph[1]: 85 words, 109 tokens  "Mr. Dursley was the director of a firm..."
+    paragraph[2]: 131 words, 183 tokens "The Dursleys had everything they wanted..."
+    paragraph[3]: 67 words, 83 tokens   "When Mr. and Mrs. Dursley woke up..."
+
+IMPORTANT: tokens are NOT the same as words. Paragraph 0 has 45 words
+but 61 tokens - the tokenizer (the piece that turns text into the
+numbered units the model actually reads) sometimes splits ONE word into
+MULTIPLE tokens (e.g. "didn't" might become "didn" + "'" + "t").
+
+Tracing the loop by hand against the code:
+
+Paragraph 0: current_words starts empty, so the "close the chunk" check
+is skipped (nothing to close yet). Paragraph 0 gets added:
+current_words = its 45 words, current_tokens = 61.
+
+Paragraph 1: Check: current_tokens (61) + paragraph_tokens (109) = 170,
+which is > max_tokens (60). So -> CLOSE THE CHUNK NOW, before adding
+paragraph 1:
+    chunk[0]: 45 words, 61 tokens
+    "Mr. and Mrs. Dursley... because they just didn't hold with such nonsense."
+(That's exactly paragraph 0, saved as-is.)
+
+Then the OVERLAP kicks in:
+    current_words = current_words[-overlap_words:]
+grabs the LAST 10 words of the chunk we just closed (overlap_words=10
+in this demo) - "...or mysterious, because they just didn't hold with
+such nonsense." - and paragraph 1 gets appended after it. chunk[1]'s
+actual text literally STARTS by repeating the tail of chunk[0]:
+    chunk[1]: 95 words, 123 tokens
+    "or mysterious, because they just didn't hold with such nonsense. Mr.
+    Dursley was the director of a firm called Grunnings..."
+
+That repeated tail is the overlap - it exists so that if a search later
+lands near this seam, it doesn't lose context that got cut mid-thought.
+
+WHY is chunk[1] already at 123 tokens, way over our 60 limit? Because
+paragraph 1 ALONE is 109 tokens - bigger than max_tokens=60. The code's
+rule is "never split a paragraph apart," so once a paragraph itself is
+close to (or here, bigger than) the limit, the chunk holding it WILL
+overflow. This is not a bug - it's the exact tradeoff documented in the
+code's own docstring ("this assumes no single paragraph is longer than
+max_tokens"). This is exactly why the REAL production code uses
+max_tokens=400 - we verified earlier that the book's longest paragraph
+is only 199 words (roughly ~260-280 tokens), safely under 400. With
+max_tokens=60 in this demo, that assumption breaks, and we see the
+failure mode live.
+
+The same pattern repeats for chunk[2] and chunk[3] - each new chunk
+opens with the last 10 words of the previous one, then absorbs the next
+paragraph whole.
+
+
+STEP 5: embedding one real chunk
+-----------------------------------
+Code:
+    vector = model.encode(one_chunk_text)
+
+Took chunk[0]'s actual text (the "Dursleys proud to say" paragraph) and
+embedded it. Real output:
+
+    Shape: (384,)  -> a flat list of 384 numbers
+    First 10:  [0.0304  0.0016  0.0709  0.0236  0.0202  0.0053  0.0268 -0.0224  0.0013 -0.0648]
+    Last 10:   [0.1248 -0.0727  0.0472  0.1139 -0.0628  0.0419  0.0863  0.0343 -0.1080  0.0210]
+
+That entire 268-character paragraph about the Dursleys got compressed
+into exactly 384 decimal numbers. Every chunk, short or long, always
+produces 384 numbers - that count is fixed by the model itself, not by
+how long the input text is.
+
+
+STEP 6: proof these numbers actually capture MEANING
+--------------------------------------------------------
+To prove these numbers aren't arbitrary, we embedded 3 made-up
+sentences and measured how "close" their vectors are using cosine
+similarity (1.0 = identical meaning, 0 = unrelated, closer to 1 = more
+similar):
+
+    A: "Harry Potter lived with the Dursleys."
+    B: "Harry stayed at his aunt and uncle's house."  (different words, same meaning as A)
+    C: "Quidditch is played on broomsticks."          (unrelated topic)
+
+    Similarity(A, B) = 0.6446   <- higher, despite sharing almost no words
+    Similarity(A, C) = 0.2941   <- lower
+
+A and B share barely any words in common, but scored much closer
+together than A and C - because the model encoded MEANING, not just
+matching words. That's the whole point of embeddings, and this is what
+will let retrieval later find the right book chunk even if a question
+uses totally different words than the book does.
+
+
+STEP 7: what a vector database is for
+--------------------------------------
+So far, every embedding only existed in memory - the moment the Python
+script finished running, all 370 vectors disappeared. A vector database
+(we're using chromadb, already installed) solves two problems:
+  1. Saves the vectors to disk, so we don't have to re-embed all 370
+     chunks every single time we want to use them.
+  2. Later lets us quickly find "which stored vectors are closest to
+     this new vector?" - which is exactly what searching for an answer
+     to a question will require.
+
+Three building blocks, with a real-world analogy:
+  - CLIENT: the connection/app that talks to the on-disk database
+    folder. Analogy: the Gmail app vs. Google's raw mail storage - the
+    client is how you reach the storage, not the storage itself.
+  - COLLECTION: a named "drawer" inside that database (we named ours
+    "sorcerers_stone_chunks"). One database can hold several collections.
+  - RECORD: one stored chunk = 4 aligned pieces bundled together under
+    one id: the id itself, the embedding (vector), the document
+    (original chunk text), and metadata (extra tags, e.g. which
+    chapter). The vector alone is useless to a human, so the database
+    stores the original text right alongside it.
+
+
+STEP 8: creating a client and an empty collection (real demo)
+-----------------------------------------------------------------
+Code:
+    client = chromadb.PersistentClient(path="chroma_demo")
+    collection = client.create_collection(name="test_collection")
+    print(collection)
+    print(collection.count())
+
+Real output:
+    Collection(name=test_collection)
+    0
+
+Before this ran, the "chroma_demo" folder didn't exist. After one line
+of code, it existed on disk with a chroma.sqlite3 file inside - proof
+the client is a real connection to real persistent storage, not just an
+in-memory object. count() returns 0 because we made an empty drawer;
+nothing has been put inside it yet.
+
+
+STEP 9: adding one record by hand (real demo)
+--------------------------------------------------
+Code:
+    collection.add(
+        ids=["chunk_0"],
+        embeddings=[[0.1, 0.2, 0.3, 0.4]],   # shrunk to 4 numbers just for this demo
+        documents=["Harry looked up and saw a snowy owl tapping at the window."],
+        metadatas=[{"chapter": "Chapter 1"}],
+    )
+    result = collection.get(ids=["chunk_0"])
+
+Real output:
+    Count after adding: 1
+    {'ids': ['chunk_0'],
+     'embeddings': None,
+     'documents': ['Harry looked up and saw a snowy owl tapping at the window.'],
+     'metadatas': [{'chapter': 'Chapter 1'}]}
+
+Adding a record is really just "here are 4 lists (ids, embeddings,
+documents, metadatas), all the same length, lined up by position." The
+count going from 0 to 1 confirms the record actually landed. Note
+'embeddings': None here - not missing, just not returned by default
+(nobody wants to read a huge list of decimals); passing
+include=["embeddings"] to get() would show it.
+
+
+STEP 10: storing all 370 real chunks (storage.py)
+-------------------------------------------------------
+Code (the real, non-demo version, in storage.py):
+    client = chromadb.PersistentClient(path="chroma_db")
+    collection = client.get_or_create_collection(
+        name="sorcerers_stone_chunks",
+        metadata={"hnsw:space": "cosine"},
+    )
+    collection.add(
+        ids=[f"chunk_{i}" for i in range(len(chunks))],
+        embeddings=embeddings,       # all 370 real 384-dim vectors
+        documents=texts,             # all 370 real chunk texts
+        metadatas=[{"chapter": c["chapter"]} for c in chunks],
+    )
+
+New details vs. the one-record demo:
+  - ids/metadatas are now built automatically with a list comprehension
+    (chunk_0 ... chunk_369) instead of typed by hand.
+  - get_or_create_collection (not create_collection) so re-running the
+    script later doesn't crash if the collection already exists.
+  - metadata={"hnsw:space": "cosine"} tells chromadb to measure
+    similarity using COSINE SIMILARITY specifically, matching how the
+    embedding model (multi-qa-MiniLM-L6-cos-v1) was trained. Without
+    this, chromadb defaults to a different distance formula that lines
+    up less well with this model.
+  - The database now lives in "chroma_db" inside the real project
+    folder (not a scratchpad), so it survives between sessions.
+
+Real output:
+    Built 370 chunks.
+    Generating embeddings for all chunks...
+    Adding 370 records to collection 'sorcerers_stone_chunks'...
+    Done. Collection now holds 370 records.
+
+    Sample record back from the database (chunk_5):
+      Chapter: CHAPTER ONE
+      Text: saying. "The Potters, that's right, that's what I heard
+      yes, their son, Harry" Mr. Dursley stopped dead...
+
+All 370 chunks - the entire book - are now permanently saved on disk,
+each as a complete, readable, searchable record.
+
+
+STEP 11: tracing ONE chunk through the ENTIRE pipeline, start to finish
+------------------------------------------------------------------------
+To double check nothing got scrambled anywhere along the way, we
+followed chunk_0 (the very first chunk of the book) through every
+single stage and confirmed each handoff:
+
+  1. Raw text -> chapters: found heading 'CHAPTER ONE'.
+  2. Chapter -> paragraphs: Chapter One has 109 paragraphs (paragraph 0
+     is the title, skipped).
+  3. Paragraphs -> chunk: paragraphs 1..N glued together into
+     chunk_0 = 261 words, 353 tokens (under the real 400-token limit).
+  4. Chunk text -> embedding: turned into a vector of 384 numbers,
+     e.g. first 5: [-0.0335  0.0243  0.0604  0.0299  -0.0209].
+  5. Read the SAME chunk back out of the real ChromaDB database:
+       Stored chapter tag: CHAPTER ONE
+       Stored text matches freshly-chunked text: True
+       Cosine similarity between fresh vector and stored vector: 1.000000
+
+Text match = True and similarity = 1.000000 together prove the record
+sitting in the database is exactly the same chunk and exactly the same
+vector we computed - nothing was corrupted, truncated, or mismatched
+between embedding and storage.
+
+Full chain for this one example:
+    book file
+      -> "CHAPTER ONE" heading found
+      -> 109 paragraphs
+      -> paragraphs 1..N glued into a 353-token chunk
+      -> 384-number vector
+      -> stored on disk with id "chunk_0", tagged CHAPTER ONE
+
+
+WHAT'S NEXT
+-----------
+Ingestion pipeline (chunking -> embedding -> vector storage) is now
+complete and verified end to end. Next stage is RETRIEVAL: embed a
+user's question the same way, search the "sorcerers_stone_chunks"
+collection for the closest stored vectors, and return the matching
+chunks of book text. Not started yet as of this walkthrough.
