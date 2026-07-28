@@ -1,0 +1,246 @@
+HARRY POTTER AND THE SORCERER'S STONE -- RETRIEVAL/GENERATION EVALUATION DATASET
+==================================================================================
+Every question below was checked against the actual book text before being
+included, so each answer is verifiably correct (not written from general
+knowledge of the series).
+
+Three difficulty tiers, 20 questions each (60 total):
+
+  SET 1 - EASY:    the fact is stated directly in one short passage/scene.
+                    Answers are ~1-6 words (well under 20 tokens).
+  SET 2 - MEDIUM:  answering requires combining 2-3 details that appear
+                    close together, within the same scene (a scene this size
+                    typically spans 2-3 of our ~250-word chunks).
+                    Answers are still short (under 20 tokens).
+  SET 3 - HARD / DERIVED: answering requires connecting information from
+                    scenes that are far apart in the book (different
+                    chapters, sometimes beginning vs. end). These need
+                    inference, not just lookup, so answers are longer.
+
+No answer key/chunk-ID mapping is included here -- this is just the Q&A
+ground truth. Chunk-level retrieval scoring (which chunk IDs "should" come
+back for each question) is the next step, once we start pipeline 3 for real.
+
+==================================================================================
+SET 1 -- EASY (single-chunk lookup, answers under 20 tokens)
+==================================================================================
+
+1. Q: What is the name of the aunt who raises Harry?
+   A: Petunia Dursley
+
+2. Q: What company does Uncle Vernon work for?
+   A: Grunnings
+
+3. Q: What does Uncle Vernon's company manufacture?
+   A: Drills
+
+4. Q: What is the name of Harry's owl?
+   A: Hedwig
+
+5. Q: What is the name of Neville's toad?
+   A: Trevor
+
+6. Q: What pub serves as the entrance to Diagon Alley?
+   A: The Leaky Cauldron
+
+7. Q: What is the name of the wand shop Harry visits?
+   A: Ollivanders
+
+8. Q: What two materials make up Harry's wand?
+   A: Holly wood and a phoenix feather
+
+9. Q: What Gringotts vault number does Hagrid collect a package from?
+   A: Vault seven hundred and thirteen
+
+10. Q: What is the name of the goblin who leads Harry and Hagrid to the vaults?
+    A: Griphook
+
+11. Q: What is the name of the three-headed dog guarding the trapdoor?
+    A: Fluffy
+
+12. Q: What name does Hagrid give the dragon he wins?
+    A: Norbert
+
+13. Q: What school does Dudley Dursley attend?
+    A: Smeltings
+
+14. Q: Who is the elderly neighbor who used to babysit Harry?
+    A: Mrs. Figg
+
+15. Q: What is the Gryffindor common room password right after the troll incident?
+    A: Pig snout
+
+16. Q: What object, once his father's, does Harry receive anonymously at Christmas?
+    A: An invisibility cloak
+
+17. Q: What model of broomstick does Harry get as a first-year?
+    A: A Nimbus Two Thousand
+
+18. Q: What position does Harry play on the Gryffindor Quidditch team?
+    A: Seeker
+
+19. Q: Which of Ron's brothers studies dragons in Romania?
+    A: Charlie
+
+20. Q: What is the name of the alchemist who created the Sorcerer's Stone?
+    A: Nicolas Flamel
+
+==================================================================================
+SET 2 -- MEDIUM (needs 2-3 nearby details from the same scene, answers under 20 tokens)
+==================================================================================
+
+1. Q: What is Harry's full home address with the Dursleys?
+   A: Number four, Privet Drive
+
+2. Q: Why couldn't the Dursleys leave Harry with Mrs. Figg before their zoo trip?
+   A: She had broken her leg
+
+3. Q: How old are Nicolas Flamel and his wife Perenelle?
+   A: 665 and 658 years old
+
+4. Q: How many points did Dumbledore award Ron and Hermione at the final feast, and for what?
+   A: 50 each, for chess and cool logic
+
+5. Q: How many points did Neville earn at the final feast, and why?
+   A: Ten, for standing up to his friends
+
+6. Q: What was Gryffindor's final house point total, and whose total did it match?
+   A: 482, tying Slytherin
+
+7. Q: What does the inscription on the Mirror of Erised mean when read correctly?
+   A: "I show not your face but your heart's desire"
+
+8. Q: According to Ollivander, what connects Harry's wand to Voldemort's wand?
+   A: Both contain a feather from the same phoenix
+
+9. Q: What spell does Hermione use to stop Neville, and what does it do to him?
+   A: Petrificus Totalus; it freezes his whole body
+
+10. Q: How did the trio get past the giant chess set, and what did it cost them?
+    A: Ron sacrificed himself as a knight and was knocked out
+
+11. Q: What happened to Norbert the dragon once Hagrid couldn't keep him?
+    A: Charlie's friends took him away to Romania
+
+12. Q: Why was Snape limping after refereeing the Quidditch match, and what did the trio suspect?
+    A: Bitten by Fluffy; they suspected he was jinxing Harry's broom
+
+13. Q: What mistake did Hagrid make at the Hog's Head that endangered the Stone?
+    A: He told a stranger how to get past Fluffy
+
+14. Q: What happened to Neville during his first flying lesson?
+    A: He panicked, flew out of control, and broke his wrist
+
+15. Q: Why do Harry, Ron, Hermione, and Malfoy end up in detention in the Forbidden Forest?
+    A: Filch and McGonagall caught them out of bed at night
+
+16. Q: What is unusual about the wizard chess pieces compared to Muggle ones?
+    A: They are alive and move on their own
+
+17. Q: What was Harry doing right before he found Snape and Filch discussing the Restricted Section?
+    A: Sneaking around at night under his invisibility cloak
+
+18. Q: What two things does Hagrid tell Harry about his parents on the way to Diagon Alley?
+    A: Voldemort killed them, and Harry survived the curse
+
+19. Q: Why did Professor McGonagall refuse to let Harry speak to Dumbledore about the Stone?
+    A: Dumbledore had already left for London that morning
+
+20. Q: What excuse got Dumbledore called away from Hogwarts the night the Stone was almost stolen?
+    A: An urgent owl from the Ministry of Magic
+
+==================================================================================
+SET 3 -- HARD / DERIVED (requires connecting facts from far-apart chapters)
+==================================================================================
+
+1. Q: Why is Quirrell unable to touch Harry during their final confrontation?
+   A: Harry's mother died to save him, and that sacrifice left a
+      protection in his skin that burns anyone marked by Voldemort's hatred.
+
+2. Q: Why did Voldemort want the Sorcerer's Stone so badly?
+   A: The Stone produces the Elixir of Life, which he needed to
+      rebuild a body of his own after losing his original one.
+
+3. Q: Why does Dumbledore say the Mirror of Erised is dangerous, based on what Harry saw in it?
+   A: It shows a person's deepest desire rather than the truth or
+      anything useful, and people have wasted away obsessing over it.
+
+4. Q: How does the wand Ollivander sells Harry in Diagon Alley foreshadow the book's climax?
+   A: Ollivander reveals the wand's twin gave Harry his scar, tying
+      Harry and Voldemort together long before their final meeting.
+
+5. Q: How does Hagrid's earlier slip about Fluffy end up mattering during the break-in to steal the Stone?
+   A: Hagrid told a stranger (secretly Quirrell) that music puts
+      Fluffy to sleep, which is exactly how the intruder gets past him.
+
+6. Q: Why does the trio's detention in the Forbidden Forest turn out to be connected to the theft attempt on the Stone?
+   A: They find a wounded unicorn and see Quirrell/Voldemort drinking
+      its blood, the first solid proof someone is after the Stone.
+
+7. Q: Why does Snape's hostility toward Harry all year turn out to be misleading?
+   A: He seemed suspicious and even sabotaged Harry's Quidditch match
+      in the trio's eyes, but he actually disliked Harry only because
+      he had disliked Harry's father, and was secretly protecting Harry
+      from Quirrell the whole time.
+
+8. Q: How do Gryffindor's point losses and gains across the year explain their house cup win?
+   A: Points lost earlier (Neville, Harry, and friends breaking rules)
+      were outweighed by Dumbledore's last-minute awards for stopping
+      Voldemort at the end of the year.
+
+9. Q: Why does Quirrell wear a turban all year, and what is the payoff of that detail?
+   A: It hides Voldemort's weak, reborn face living on the back of
+      his head, revealed only in the final chapter.
+
+10. Q: How do the obstacles guarding the Stone connect back to lessons taught earlier in the book?
+    A: Each obstacle mirrors a class: Devil's Snare from Herbology,
+       flying keys from flying lessons, giant chess from strategy, and
+       a logic riddle among potion bottles from Potions.
+
+11. Q: Why is it significant that Hermione, not Harry or Ron, solves the final potion riddle?
+    A: It shows intelligence matters as much as bravery, echoed later
+       when Dumbledore praises her "cool logic" at the final feast.
+
+12. Q: How does Neville's arc across the book pay off at the end-of-year feast?
+    A: After being mocked and overlooked all year, he finally stands
+       up to his friends, and that courage earns Gryffindor the points
+       that win them the house cup.
+
+13. Q: Why did the trio suspect Snape of cursing Harry's broom during the Quidditch match, and how was that suspicion overturned?
+    A: They saw Snape muttering and staring at Harry while his broom
+       bucked wildly; later they learn Snape was actually casting a
+       counter-curse to save Harry from Quirrell's jinx.
+
+14. Q: What clue from the Quidditch match, revisited later in the book, hints that someone was protecting Harry rather than attacking him?
+    A: Hermione had set Snape's robes on fire assuming he was cursing
+       Harry, which actually broke his eye contact and stopped him from
+       finishing the counter-curse against Quirrell.
+
+15. Q: Why does the fact that Voldemort killed Harry's parents matter for how the final battle is resolved?
+    A: Lily Potter's death to protect her son created the same
+       protective magic that stops Quirrell from touching Harry years later.
+
+16. Q: How did the trio finally connect Nicolas Flamel to what's hidden at Hogwarts, after weeks of searching?
+    A: Harry happened to recall Flamel's name from a Chocolate Frog
+       card, which let Hermione recognize it in a library book she'd
+       already read for an unrelated reason.
+
+17. Q: How does the recurring pain in Harry's scar connect events across the book?
+    A: It flares up whenever Voldemort/Quirrell is near or feels
+       strong emotion, linking the wand shop scene, the Quidditch
+       match, and the final confrontation as the same ongoing threat.
+
+18. Q: Why does Dumbledore say that Harry, Ron, and Hermione succeeded where a teacher might not have?
+    A: He explains that Voldemort could not understand or anticipate
+       the protection of love and the loyalty that drove the three of
+       them to risk everything for each other.
+
+19. Q: Why does the final chapter reveal that Snape had been trying to protect Harry, not harm him, all year?
+    A: Quirrell explains during the confrontation that Snape had been
+       working against him all along, reframing Snape's suspicious
+       behavior earlier in the book as protection rather than sabotage.
+
+20. Q: Why is Neville awarded points at the very end instead of earlier in the story, and why does it matter that it happens then?
+    A: He only finds the courage to stand up to his own friends at the
+       very end, and Dumbledore's timing of the award is what pushes
+       Gryffindor's total just past Slytherin's to win the house cup.
