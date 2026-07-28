@@ -1,0 +1,101 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loaded 60 questions (20 easy, 20 medium, 20 hard).
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights:  14%|#3        | 14/103 [00:00<00:00, 128.07it/s]Loading weights:  53%|#####3    | 55/103 [00:00<00:00, 273.94it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 330.16it/s]
+======================================================================
+RETRIEVAL EVALUATION (Set 1 / easy, 20 questions)
+======================================================================
+  [HIT ] What is the name of the aunt who raises Harry?
+  [MISS] What company does Uncle Vernon work for?
+  [MISS] What does Uncle Vernon's company manufacture?
+  [HIT ] What is the name of Harry's owl?
+  [HIT ] What is the name of Neville's toad?
+  [HIT ] What pub serves as the entrance to Diagon Alley?
+  [HIT ] What is the name of the wand shop Harry visits?
+  [HIT ] What two materials make up Harry's wand?
+  [HIT ] What Gringotts vault number does Hagrid collect a package from?
+  [HIT ] What is the name of the goblin who leads Harry and Hagrid to the vaults?
+  [HIT ] What is the name of the three-headed dog guarding the trapdoor?
+  [HIT ] What name does Hagrid give the dragon he wins?
+  [HIT ] What school does Dudley Dursley attend?
+  [HIT ] Who is the elderly neighbor who used to babysit Harry?
+  [HIT ] What is the Gryffindor common room password right after the troll incident?
+  [HIT ] What object, once his father's, does Harry receive anonymously at Christmas?
+  [HIT ] What model of broomstick does Harry get as a first-year?
+  [HIT ] What position does Harry play on the Gryffindor Quidditch team?
+  [HIT ] Which of Ron's brothers studies dragons in Romania?
+  [HIT ] What is the name of the alchemist who created the Sorcerer's Stone?
+
+Retrieval hit rate: 18/20
+
+======================================================================
+GENERATION EVALUATION (60 questions, semantic similarity)
+======================================================================
+  [0.589] (EASY) What is the name of the aunt who raises Harry?
+          generated: Aunt Petunia.
+          truth:     Petunia Dursley
+
+  [0.046] (EASY) What company does Uncle Vernon work for?
+          generated: I don't have enough information in this book to answer that.
+          truth:     Grunnings
+
+  [-0.045] (EASY) What does Uncle Vernon's company manufacture?
+          generated: I don't have enough information in this book to answer that.
+          truth:     Drills
+
+  [0.361] (EASY) What is the name of Harry's owl?
+          generated: The text does not explicitly state the name of Harry's owl. It only mentions that Hagrid buys Harry a snowy owl at Eeylo
+          truth:     Hedwig
+
+  [0.925] (EASY) What is the name of Neville's toad?
+          generated: Trevor.
+          truth:     Trevor
+
+  [0.652] (EASY) What pub serves as the entrance to Diagon Alley?
+          generated: The Leaky Cauldron serves as the entrance to Diagon Alley.
+          truth:     The Leaky Cauldron
+
+  [0.406] (EASY) What is the name of the wand shop Harry visits?
+          generated: The name of the wand shop Harry visits is Ollivanders.
+          truth:     Ollivanders
+
+  [0.742] (EASY) What two materials make up Harry's wand?
+          generated: Holly and phoenix feather. The phoenix feather is specifically from the same phoenix that gave a feather to the wand of 
+          truth:     Holly wood and a phoenix feather
+
+  [0.945] (EASY) What Gringotts vault number does Hagrid collect a package from?
+          generated: Vault seven hundred and thirteen.
+          truth:     Vault seven hundred and thirteen
+
+  [1.000] (EASY) What is the name of the goblin who leads Harry and Hagrid to the vaults?
+          generated: Griphook
+          truth:     Griphook
+
+  [0.540] (EASY) What is the name of the three-headed dog guarding the trapdoor?
+          generated: The three-headed dog's name is Fluffy.
+          truth:     Fluffy
+
+  [0.472] (EASY) What name does Hagrid give the dragon he wins?
+          generated: The name Hagrid gives the dragon is Norbert.
+          truth:     Norbert
+
+Traceback (most recent call last):
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\pipeline 3\evaluate.py", line 170, in <module>
+    main()
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\pipeline 3\evaluate.py", line 166, in main
+    evaluate_generation(trimmed, model, collection, bm25_index, groq_client)
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\pipeline 3\evaluate.py", line 123, in evaluate_generation
+    generated_answer = generate_answer(
+                       ^^^^^^^^^^^^^^^^
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\pipeline 3\..\pipeline 2\generate.py", line 29, in generate_answer
+    response = groq_client.chat.completions.create(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\venv\Lib\site-packages\groq\resources\chat\completions.py", line 462, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\venv\Lib\site-packages\groq\_base_client.py", line 1284, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\venv\Lib\site-packages\groq\_base_client.py", line 1071, in request
+    raise self._make_status_error_from_response(err.response) from None
+groq.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kya1bqp1e7gb5dt090t8ztre` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97497, Requested 5217. Please try again in 39m4.896s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}

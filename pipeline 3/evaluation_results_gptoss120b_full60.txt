@@ -1,0 +1,103 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loaded 60 questions (20 easy, 20 medium, 20 hard).
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 2881.11it/s]
+Loading weights:   0%|          | 0/105 [00:00<?, ?it/s]Loading weights: 100%|##########| 105/105 [00:00<00:00, 6719.59it/s]
+======================================================================
+RETRIEVAL EVALUATION (Set 1 / easy, 20 questions)
+======================================================================
+  [HIT ] What is the name of the aunt who raises Harry?
+  [MISS] What company does Uncle Vernon work for?
+  [MISS] What does Uncle Vernon's company manufacture?
+  [HIT ] What is the name of Harry's owl?
+  [HIT ] What is the name of Neville's toad?
+  [HIT ] What pub serves as the entrance to Diagon Alley?
+  [HIT ] What is the name of the wand shop Harry visits?
+  [HIT ] What two materials make up Harry's wand?
+  [HIT ] What Gringotts vault number does Hagrid collect a package from?
+  [HIT ] What is the name of the goblin who leads Harry and Hagrid to the vaults?
+  [HIT ] What is the name of the three-headed dog guarding the trapdoor?
+  [HIT ] What name does Hagrid give the dragon he wins?
+  [HIT ] What school does Dudley Dursley attend?
+  [HIT ] Who is the elderly neighbor who used to babysit Harry?
+  [HIT ] What is the Gryffindor common room password right after the troll incident?
+  [HIT ] What object, once his father's, does Harry receive anonymously at Christmas?
+  [HIT ] What model of broomstick does Harry get as a first-year?
+  [HIT ] What position does Harry play on the Gryffindor Quidditch team?
+  [HIT ] Which of Ron's brothers studies dragons in Romania?
+  [HIT ] What is the name of the alchemist who created the Sorcerer's Stone?
+
+Retrieval hit rate: 18/20
+
+======================================================================
+GENERATION EVALUATION (60 questions, similarity + faithfulness)
+======================================================================
+  [0.482] [FAITHFUL] (EASY) What is the name of the aunt who raises Harry?
+          generated: The aunt who raises Harry is **Aunt Petunia**.
+          truth:     Petunia Dursley
+
+  [0.046] [FAITHFUL] (EASY) What company does Uncle Vernon work for?
+          generated: I don't have enough information in this book to answer that.
+          truth:     Grunnings
+
+  [-0.045] [FAITHFUL] (EASY) What does Uncle Vernon's company manufacture?
+          generated: I don't have enough information in this book to answer that.
+          truth:     Drills
+
+  [0.537] [FAITHFUL] (EASY) What is the name of Harry's owl?
+          generated: Harry’s owl is named **Hedwig**.
+          truth:     Hedwig
+
+  [0.423] [FAITHFUL] (EASY) What is the name of Neville's toad?
+          generated: Neville’s toad is named **Trevor**.
+          truth:     Trevor
+
+  [0.515] [NOT FAITHFUL] (EASY) What pub serves as the entrance to Diagon Alley?
+          generated: The pub that serves as the entrance to Diagon Alley is **the Leaky Cauldron**.
+          truth:     The Leaky Cauldron
+          judge:     The context confirms the Leaky Cauldron is a pub in Diagon Alley, but does not state it serves as the entrance to Diagon Alley.
+
+  [0.510] [FAITHFUL] (EASY) What is the name of the wand shop Harry visits?
+          generated: Harry visits the wand shop called **Ollivanders** (the shop is labeled “Ollivanders: Makers of Fine Wands since 382 B.C.
+          truth:     Ollivanders
+
+  [0.474] [FAITHFUL] (EASY) What two materials make up Harry's wand?
+          generated: Harry’s wand is made of **holly wood** and a **phoenix feather**.
+          truth:     Holly wood and a phoenix feather
+
+  [0.242] [FAITHFUL] (EASY) What Gringotts vault number does Hagrid collect a package from?
+          generated: Hagrid collects the package from **vault 713** at Gringotts.
+          truth:     Vault seven hundred and thirteen
+
+  [0.446] [FAITHFUL] (EASY) What is the name of the goblin who leads Harry and Hagrid to the vaults?
+          generated: The goblin who leads Harry and Hagrid to the vaults is **Griphook**.
+          truth:     Griphook
+
+    (rate limited, waiting 20s before retry: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kya1bqp1e7gb5dt090t8ztre` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198308, Requested 5232. Please try again in 25m29.28s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}})
+    (rate limited, waiting 20s before retry: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kya1bqp1e7gb5dt090t8ztre` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198262, Requested 5133. Please try again in 24m26.64s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}})
+    (rate limited, waiting 20s before retry: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kya1bqp1e7gb5dt090t8ztre` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198215, Requested 5232. Please try again in 24m49.104s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}})
+    (rate limited, waiting 20s before retry: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kya1bqp1e7gb5dt090t8ztre` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198169, Requested 5232. Please try again in 24m29.232s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}})
+    (rate limited, waiting 20s before retry: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kya1bqp1e7gb5dt090t8ztre` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198122, Requested 5133. Please try again in 23m26.16s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}})
+Traceback (most recent call last):
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\pipeline 3\evaluate.py", line 232, in <module>
+    main()
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\pipeline 3\evaluate.py", line 228, in main
+    evaluate_generation(trimmed, model, collection, bm25_index, cross_encoder, groq_client)
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\pipeline 3\evaluate.py", line 164, in evaluate_generation
+    generated_answer = call_with_retry(
+                       ^^^^^^^^^^^^^^^^
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\pipeline 3\evaluate.py", line 122, in call_with_retry
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\pipeline 3\..\pipeline 2\generate.py", line 43, in generate_answer
+    response = groq_client.chat.completions.create(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\venv\Lib\site-packages\groq\resources\chat\completions.py", line 462, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\venv\Lib\site-packages\groq\_base_client.py", line 1284, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ashis\OneDrive\Desktop\Arpan\venv\Lib\site-packages\groq\_base_client.py", line 1071, in request
+    raise self._make_status_error_from_response(err.response) from None
+groq.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kya1bqp1e7gb5dt090t8ztre` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198076, Requested 5232. Please try again in 23m49.056s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
